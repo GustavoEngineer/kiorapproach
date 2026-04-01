@@ -1,0 +1,99 @@
+.basic-card {
+    --l-size: 10px;
+    --thickness: 2px;
+    --gap: 5px;
+    --corner-color: rgba(255, 255, 255, 0.45);
+    --side-color: rgba(255, 255, 255, 0.2);
+    --side-offset: calc(var(--l-size) + var(--gap));
+
+    position: relative;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.7rem 2rem;
+    display: inline-block;
+}
+
+.basic-card__corner {
+    position: absolute;
+    width: var(--l-size);
+    height: var(--l-size);
+    border-color: var(--corner-color);
+    border-style: solid;
+    pointer-events: none;
+}
+
+/* Corner variants */
+.basic-card__corner--tl {
+    top: 0;
+    left: 0;
+    border-top-width: var(--thickness);
+    border-left-width: var(--thickness);
+    border-bottom-width: 0;
+    border-right-width: 0;
+}
+
+.basic-card__corner--tr {
+    top: 0;
+    right: 0;
+    border-top-width: var(--thickness);
+    border-right-width: var(--thickness);
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.basic-card__corner--bl {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: var(--thickness);
+    border-left-width: var(--thickness);
+    border-top-width: 0;
+    border-right-width: 0;
+}
+
+.basic-card__corner--br {
+    bottom: 0;
+    right: 0;
+    border-bottom-width: var(--thickness);
+    border-right-width: var(--thickness);
+    border-top-width: 0;
+    border-left-width: 0;
+}
+
+/* Side borders */
+.basic-card__side {
+    position: absolute;
+    border-color: var(--side-color);
+    border-style: solid;
+    pointer-events: none;
+}
+
+.basic-card__side--h {
+    left: var(--side-offset);
+    right: var(--side-offset);
+    height: 0;
+    border-top-width: var(--thickness);
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+}
+
+.basic-card__side--v {
+    top: var(--side-offset);
+    bottom: var(--side-offset);
+    width: 0;
+    border-left-width: var(--thickness);
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+}
+
+.basic-card__side--top { top: 0; }
+.basic-card__side--bottom { bottom: 0; }
+.basic-card__side--left { left: 0; }
+.basic-card__side--right { right: 0; }
+
+.basic-card__content {
+    position: relative;
+    z-index: 1;
+}

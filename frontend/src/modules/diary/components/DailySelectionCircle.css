@@ -1,0 +1,133 @@
+.daily-selection-circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem; /* Revertido de 5.5rem */
+    height: 4rem;
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.daily-selection-circle--today {
+    width: 8.5rem; /* Mantenemos monumental hoy */
+    height: 8.5rem;
+}
+
+.daily-selection-circle--selected {
+    background-color: transparent;
+}
+
+/* Semicírculos laterales (tipo corchete curvo) */
+.daily-selection-circle--selected::before,
+.daily-selection-circle--selected::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    bottom: -20px;
+    left: -20px;
+    right: -20px;
+    border-radius: 50%;
+    border: 3px solid rgba(140, 140, 140, 0.5);
+    transition: all 0.4s ease;
+    animation: rotate-hud 8s linear infinite; 
+}
+
+@keyframes rotate-hud {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate-hud-reverse {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.daily-selection-circle--selected::before {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+}
+
+.daily-selection-circle--selected::after {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+}
+
+.daily-selection-circle__focus {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Base del Círculo (Gris) - Estático */
+.daily-selection-circle--selected .daily-selection-circle__focus::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 3px solid rgba(80, 80, 80, 0.4);
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+/* Arcos blancos integrados (Top/Bottom) - Rotación Inversa */
+.daily-selection-circle--selected .daily-selection-circle__focus::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 4px solid #ffffff; /* Borde mucho más sólido */
+    -webkit-mask-image: conic-gradient(
+        from 0deg, 
+        #000 30deg, 
+        transparent 30deg 150deg, 
+        #000 150deg 210deg, 
+        transparent 210deg 330deg, 
+        #000 330deg
+    );
+    mask-image: conic-gradient(
+        from 0deg, 
+        #000 30deg, 
+        transparent 30deg 150deg, 
+        #000 150deg 210deg, 
+        transparent 210deg 330deg, 
+        #000 330deg
+    );
+    z-index: 2;
+    transition: all 0.4s ease;
+    animation: rotate-hud-reverse 10s linear infinite; 
+}
+
+.daily-selection-circle__num {
+    font-size: 2.5rem; /* Revertido de 3.8rem */
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: -0.1rem;
+    transition: all 0.5s ease;
+    z-index: 1;
+}
+
+.daily-selection-circle--today .daily-selection-circle__num {
+    font-size: 6.5rem; /* Mantenemos monumental hoy */
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.2rem;
+}
+
+.daily-selection-circle--other-month .daily-selection-circle__num {
+    color: #ff6e6e;
+    opacity: 0.35;
+}

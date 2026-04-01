@@ -1,0 +1,196 @@
+.diary-page {
+    position: relative; /* Para anclar los corchetes en L */
+    flex: 0 1 1000px; 
+    width: 100%;
+    max-width: 1000px;
+    height: calc(100% - 4rem); 
+    background-color: rgba(255, 255, 255, 0.02); 
+    border: none; /* Quitamos el borde completo */
+    border-radius: 0; /* Esquinas rectas para estética táctica */
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* Permitir que los corchetes sobresalgan ligeramente si es necesario */
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin: 2rem auto;
+}
+
+/* Corchete en L - Superior Izquierda */
+.diary-page::before {
+    content: '';
+    position: absolute;
+    top: -15px; /* Despegado del contenido */
+    left: -15px; 
+    width: 200px; /* Mucho más largo */
+    height: 200px;
+    border-top: 2px solid rgba(180, 180, 180, 0.4); /* Gris claro táctico */
+    border-left: 2px solid rgba(180, 180, 180, 0.4);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Corchete en L - Inferior Derecha */
+.diary-page::after {
+    content: '';
+    position: absolute;
+    bottom: -15px; /* Despegado del contenido */
+    right: -15px;
+    width: 200px; /* Mucho más largo */
+    height: 200px;
+    border-bottom: 2px solid rgba(180, 180, 180, 0.4); /* Gris claro táctico */
+    border-right: 2px solid rgba(180, 180, 180, 0.4);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.diary-page__header {
+    background-color: transparent; /* Sin fondo en la cabecera */
+    display: flex;
+    flex-direction: column;
+}
+
+.diary-page__header-row {
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.diary-page__separator {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(100, 100, 100, 0.4);
+    margin: 0.5rem 0;
+}
+
+.diary-page__title-container {
+    padding: 0.8rem 1.5rem;
+    background-color: transparent;
+}
+
+.diary-page__metric-tag {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4); /* Gris claro táctico */
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    white-space: nowrap;
+}
+
+.diary-page__title-input {
+    background: transparent;
+    border: none;
+    color: #ffffff; /* Texto de blanco */
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 100%;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.diary-page__title-input::placeholder {
+    color: rgba(255, 255, 255, 0.1);
+}
+
+/* Área del Editor */
+.diary-page__body {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.diary-page__gutter {
+    flex: 0 0 3.5rem;
+    padding: 1.5rem 0.8rem;
+    background-color: rgba(30, 30, 30, 0.2);
+    border-right: 1px solid rgba(100, 100, 100, 0.1);
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 14px; /* Tamaño exacto */
+    text-align: right;
+    user-select: none;
+    overflow: hidden;
+    line-height: 1.6; /* Sincronización */
+    box-sizing: border-box;
+}
+
+.diary-page__line-number {
+    height: 1.6em; /* Debe coincidir con el line-height del textarea */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.diary-page__content-area {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px; /* Tamaño exacto idéntico */
+    line-height: 1.6; /* Sincronización */
+    resize: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem; /* Match total padding of gutter */
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.diary-page--loading {
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+.diary-page__status {
+    font-size: 0.9rem;
+    color: #ffffff;
+    letter-spacing: 0.2rem;
+    opacity: 0.8;
+}
+
+/* Row 2: Metrics and Actions */
+.diary-page__actions {
+    margin-left: auto; /* Empuja el botón a la derecha */
+    display: flex;
+    align-items: center;
+}
+
+.diary-page__save-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.3rem 0.8rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.diary-page__save-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.diary-page__save-btn--saving {
+    background: rgba(255, 165, 0, 0.1);
+    border-color: #ffa500;
+    color: #ffa500;
+    cursor: wait;
+}
+
+.diary-page__save-btn--saved {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.diary-page__save-btn--error {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: #ff0000;
+    color: #ff0000;
+}
