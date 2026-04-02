@@ -11,16 +11,26 @@ const MobileDiaryView = () => {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [isFocused, setIsFocused] = React.useState(false);
     const initialHeight = React.useRef(window.innerHeight);
+    const hasShrunk = React.useRef(false);
 
     // Detección robusta de cierre de teclado basada en altura
     React.useEffect(() => {
         const handleResize = () => {
             const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
             
-            // Si la altura vuelve al 90% o más de la original, consideramos teclado cerrado
-            if (currentHeight >= initialHeight.current * 0.9) {
+            // 1. Detectar si el teclado se ha abierto (altura reducida)
+            if (currentHeight < initialHeight.current * 0.8) {
+                hasShrunk.current = true;
+            }
+
+            // 2. Solo si el teclado estuvo abierto una vez (hasShrunk == true),
+            // y ahora la altura vuelve a ser grande (>= 90%), restauramos la UI.
+            if (hasShrunk.current && currentHeight >= initialHeight.current * 0.9) {
                 // Pequeño delay para dejar que termine la animación del teclado
-                setTimeout(() => setIsFocused(false), 100);
+                setTimeout(() => {
+                    setIsFocused(false);
+                    hasShrunk.current = false;
+                }, 150);
             }
         };
 
@@ -38,6 +48,12 @@ const MobileDiaryView = () => {
             }
         };
     }, []);
+
+    // Resetear el flag de encogimiento si el foco se quita de forma manual
+    const handleToggleFocus = (val) => {
+        setIsFocused(val);
+        if (!val) hasShrunk.current = false;
+    };
 
     return (
         <div className={`mobile-diary-view ${isFocused ? 'mobile-diary-view--focused' : ''}`}>
@@ -58,7 +74,7 @@ const MobileDiaryView = () => {
             <div className="mobile-diary-view__editor-wrapper">
                 <DiaryPageResponsive 
                     selectedDate={selectedDate} 
-                    onToggleFocus={setIsFocused}
+                    onToggleFocus={handleToggleFocus}
                 />
             </div>
         </div>
