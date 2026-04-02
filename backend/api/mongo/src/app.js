@@ -5,7 +5,11 @@ const diarioRoutes = require('./routes/diarioRoutes');
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permitir todas las conexiones por ahora para facilitar despliegue
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 app.use(express.json());
 
 // Pantalla de éxito en la raíz
