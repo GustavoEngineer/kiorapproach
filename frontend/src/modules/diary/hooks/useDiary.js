@@ -27,24 +27,37 @@ export const useDiary = (selectedDate) => {
         setLoading(true);
         setStatus('LOADING');
         try {
-            const result = await diaryService.getEntries();
-            const entries = result.data || [];
+            const response = await diaryService.getEntries();
+            const entries = response.data || [];
             
-            // Buscar el registro que coincida con la fecha localmente
+            // 1. Find the earliest entry date in the entire set, or use the current selection if empty
+            const allPossibleDates = [...entries.map(e => new Date(e.fecha)), selectedDate];
+            const earliestDate = new Date(Math.min(...allPossibleDates));
+            
+            // Normalize dates to midnight to calculate day difference correctly
+            const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const start = startOfDay(earliestDate);
+            const target = startOfDay(selectedDate);
+            
+            // Calculate day difference (1 day = 1 page)
+            const diffInTime = target.getTime() - start.getTime();
+            const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
+            const dynamicPage = diffInDays + 1; // From 1
+            
+            // 2. Find the existing entry for the selected date
             const entry = entries.find(e => getLocalDateStr(e.fecha) === dateStr);
             
             if (entry) {
                 setId(entry._id);
                 setTitle(entry.titulo || '');
                 setContent(entry.contenido || '');
-                setNumPagina(entry.numPagina || 1);
+                setNumPagina(dynamicPage);
                 setStatus('LOADED');
             } else {
-                // Reset for new entry
                 setId(null);
                 setTitle('');
                 setContent('');
-                setNumPagina(entries.length + 1); // Sugerencia de página
+                setNumPagina(dynamicPage);
                 setStatus('READY');
             }
         } catch (error) {

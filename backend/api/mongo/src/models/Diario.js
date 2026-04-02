@@ -36,8 +36,13 @@ const diarioSchema = new mongoose.Schema({
 // Middleware para contar métricas antes de guardar
 diarioSchema.pre('save', function () {
     if (this.contenido) {
+        // Solo recalculamos palabras siempre, las líneas las respetamos si vienen del frontend (visuales)
         this.metadatos.palabras = this.contenido.trim() ? this.contenido.trim().split(/\s+/).length : 0;
-        this.metadatos.lineas = this.contenido.split('\n').length;
+        
+        // Si no se proporcionaron líneas (o son 0), usamos el conteo básico por \n como fallback
+        if (!this.metadatos.lineas || this.metadatos.lineas === 0) {
+            this.metadatos.lineas = this.contenido.split('\n').length;
+        }
     }
 });
 
