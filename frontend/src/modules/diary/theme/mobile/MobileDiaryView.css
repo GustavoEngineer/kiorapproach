@@ -1,0 +1,32 @@
+.mobile-diary-view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-diary-view__header-wrapper {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-diary-view--focused .mobile-diary-view__header-wrapper {
+    display: none;
+}
+
+.mobile-diary-view--focused {
+    padding: 0 !important;
+}
+
+.mobile-diary-view__separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.05);
+    margin: 0.5rem 0;
+}
+
+.mobile-diary-view__editor-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Asegurar que el editor respete el scroll */
+}
