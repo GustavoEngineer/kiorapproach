@@ -6,8 +6,8 @@ const connectDB = async () => {
         const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/divomega');
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        console.error(`Error de conexión a MongoDB: ${error.message}`);
+        throw error; // Lanzamos el error en lugar de matar el proceso
     }
 };
 
