@@ -7,6 +7,20 @@ import './DiaryHeaderResponsive.css';
 const DiaryHeaderResponsive = () => {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [isFocused, setIsFocused] = React.useState(false);
+    const [initialHeight, setInitialHeight] = React.useState(window.innerHeight);
+
+    React.useEffect(() => {
+        const handleResize = () => {
+            // Si la altura actual vuelve a ser cercana a la inicial (p.ej. el teclado se ocultó)
+            // y estábamos en modo enfocado, regresamos al modo normal.
+            if (window.innerHeight >= initialHeight - 50) {
+                setIsFocused(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [initialHeight]);
 
     return (
         <div className={`diary-header-responsive ${isFocused ? 'diary-header-responsive--focused' : ''}`}>
