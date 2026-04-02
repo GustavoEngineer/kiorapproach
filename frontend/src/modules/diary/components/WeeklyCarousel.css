@@ -4,16 +4,16 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: clamp(0.5rem, 2vw, 1rem);
     overflow: hidden;
 }
 
 .weekly-carousel__inner {
-    padding: 1.5rem;
+    padding: clamp(0.5rem, 3vw, 1.5rem);
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: clamp(0.5rem, 2vw, 1rem);
     overflow: hidden;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .weekly-carousel__title {
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 2vmin, 0.8rem);
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     letter-spacing: 0.2rem;
@@ -34,66 +34,40 @@
 
 .weekly-carousel__week-num {
     position: relative;
-    font-size: 0.7rem;
+    font-size: clamp(0.5rem, 1.5vmin, 0.7rem);
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
     background-color: rgba(255, 255, 255, 0.08);
-    padding: 0.3rem 1.2rem;
+    padding: 0.3rem 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.weekly-carousel__week-num::before,
-.weekly-carousel__week-num::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    /* Bordes más gruesos y claros */
-}
-
-.weekly-carousel__week-num::before {
-    left: 0;
-    border-right: none;
-}
-
-.weekly-carousel__week-num::after {
-    right: 0;
-    border-left: none;
-}
-
 .weekly-carousel__content {
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: clamp(0.5rem, 5vw, 2rem);
     flex: 1;
     overflow: hidden;
 }
 
 .weekly-carousel__list {
-    flex: 0 0 150px;
-    /* Reducido el ancho del texto ya que los números serán masivos */
+    flex: 0 0 clamp(80px, 20vw, 150px);
     display: flex;
     flex-direction: column;
     gap: 0;
-    /* Sin gap para que se toquen y formen una columna continua */
     height: 100%;
 }
 
 .weekly-carousel__item {
     flex: 1;
-    /* Los 7 días ocupan el 100% del alto */
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    /* Alineado a la izquierda */
     padding-left: 0.5rem;
-    /* Pequeño margen desde el borde izquierdo */
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
@@ -101,15 +75,14 @@
 }
 
 .weekly-carousel__item--today {
-    padding-left: 0.5rem; /* Alineado perfectamente con el resto de números */
-    margin: 2.5rem 0; /* Mantenemos el espacio vertical */
+    padding-left: 0.5rem;
+    margin: clamp(1rem, 5vh, 2.5rem) 0;
     z-index: 10;
 }
 
 .weekly-carousel__info {
     display: flex;
     flex-direction: column;
-    /* Predeterminado: vertical */
     align-items: center;
     gap: 0.5rem;
     opacity: 0.6;
@@ -118,9 +91,8 @@
 
 .weekly-carousel__item--today .weekly-carousel__info {
     flex-direction: row;
-    /* Horizontal solo hoy */
     align-items: center;
-    gap: 2rem;
+    gap: clamp(0.5rem, 4vw, 2rem);
     opacity: 1;
 }
 
@@ -130,8 +102,7 @@
 
 .weekly-carousel__name {
     display: none;
-    /* Oculto por defecto */
-    font-size: 0.7rem;
+    font-size: clamp(0.5rem, 2vmin, 0.7rem);
     color: rgba(255, 255, 255, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.1rem;
@@ -140,21 +111,16 @@
 
 .weekly-carousel__item--today .weekly-carousel__name {
     display: block;
-    /* Solo visible hoy */
-    font-size: 2rem;
-    /* Aumentado de 0.9rem */
+    font-size: clamp(1rem, 5vmin, 2rem);
     font-weight: 700;
     color: #ffffff;
     letter-spacing: 0.15rem;
 }
 
-/* Semicírculos laterales (tipo corchete curvo) */
 .weekly-carousel__marker {
     display: none;
-    /* Quitamos la línea de color blanco */
     position: absolute;
     left: 2.2rem;
-    /* Ajustado para el nuevo padding compacto */
     width: 1.2rem;
     height: 2px;
     background-color: #ffffff;

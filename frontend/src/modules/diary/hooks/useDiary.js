@@ -1,130 +1,47 @@
-import { useState, useEffect, useCallback } from 'react';
-import diaryService from '../services/diaryService';
+import { useEffect, useContext } from 'react';
+import { DiaryContext } from '../context/DiaryContext';
 
 /**
- * Hook to manage tactical diary entry state and persistence
+ * Hook to manage tactical diary entry state and persistence via global Context
  * @param {Date} selectedDate 
  */
 export const useDiary = (selectedDate) => {
-    const [id, setId] = useState(null);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [numPagina, setNumPagina] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [saving, setSaving] = useState(false);
-    const [status, setStatus] = useState('READY'); // READY, SAVING, SAVED, ERROR
+    const context = useContext(DiaryContext);
 
-    // Helper to get consistent local date string YYYY-MM-DD
-    const getLocalDateStr = (date) => {
-        const d = new Date(date);
-        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-    };
+    if (!context) {
+        throw new Error('useDiary must be used within a DiaryProvider');
+    }
 
-    const dateStr = getLocalDateStr(selectedDate);
+    const {
+        id, setTitle,
+        title, setContent,
+        content, numPagina,
+        loading, saving,
+        status, loadEntry,
+        saveRecord, updateDraft
+    } = context;
 
-    // Fetch entries and find the one for the selected date
-    const loadEntry = useCallback(async () => {
-        setLoading(true);
-        setStatus('LOADING');
-        try {
-            const response = await diaryService.getEntries();
-            const entries = response.data || [];
-            
-            // 1. Find the earliest entry date in the entire set, or use the current selection if empty
-            const allPossibleDates = [...entries.map(e => new Date(e.fecha)), selectedDate];
-            const earliestDate = new Date(Math.min(...allPossibleDates));
-            
-            // Normalize dates to midnight to calculate day difference correctly
-            const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-            const start = startOfDay(earliestDate);
-            const target = startOfDay(selectedDate);
-            
-            // Calculate day difference (1 day = 1 page)
-            const diffInTime = target.getTime() - start.getTime();
-            const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
-            const dynamicPage = diffInDays + 1; // From 1
-            
-            // 2. Find the existing entry for the selected date
-            const entry = entries.find(e => getLocalDateStr(e.fecha) === dateStr);
-            
-            if (entry) {
-                setId(entry._id);
-                setTitle(entry.titulo || '');
-                setContent(entry.contenido || '');
-                setNumPagina(dynamicPage);
-                setStatus('LOADED');
-            } else {
-                setId(null);
-                setTitle('');
-                setContent('');
-                setNumPagina(dynamicPage);
-                setStatus('READY');
-            }
-        } catch (error) {
-            console.error('DIARY_LOAD_ERROR:', error);
-            setStatus('ERROR');
-        } finally {
-            setLoading(false);
-        }
-    }, [dateStr]);
-
+    // Trigger load when date changes - logic remains internal to the hook for component convenience
     useEffect(() => {
-        loadEntry();
-    }, [loadEntry]);
-
-    /**
-     * Save or Update the current tactical record
-     */
-    const saveRecord = async (metrics = {}) => {
-        if (saving) return;
-        
-        setSaving(true);
-        setStatus('SAVING');
-        
-        const data = {
-            titulo: title || `LOG_${dateStr}`,
-            contenido: content,
-            fecha: selectedDate,
-            numPagina: numPagina,
-            metadatos: {
-                lineas: metrics.lineas || 0,
-                palabras: metrics.palabras || 0
-            }
-        };
-
-        try {
-            if (id) {
-                const result = await diaryService.updateEntry(id, data);
-                if (result.success) setStatus('SAVED');
-            } else {
-                const result = await diaryService.createEntry(data);
-                if (result.success) {
-                    setId(result.data._id);
-                    setStatus('SAVED');
-                }
-            }
-            
-            // Reset status after 3 seconds
-            setTimeout(() => setStatus('READY'), 3000);
-        } catch (error) {
-            console.error('DIARY_SAVE_ERROR:', error);
-            setStatus('ERROR');
-        } finally {
-            setSaving(false);
+        if (selectedDate) {
+            loadEntry(selectedDate);
         }
-    };
+    }, [selectedDate, loadEntry]);
+
+    // Adaptive setters that update both local context and the draft cache
+    const wrappedSetTitle = (val) => updateDraft(selectedDate, 'title', val);
+    const wrappedSetContent = (val) => updateDraft(selectedDate, 'content', val);
 
     return {
         id,
         title,
-        setTitle,
+        setTitle: wrappedSetTitle,
         content,
-        setContent,
+        setContent: wrappedSetContent,
         numPagina,
-        setNumPagina,
         loading,
         saving,
         status,
-        saveRecord
+        saveRecord: (metrics) => saveRecord(selectedDate, metrics)
     };
 };

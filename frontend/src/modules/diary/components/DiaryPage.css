@@ -137,26 +137,6 @@
     margin: 0;
     scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
     scrollbar-width: thin;
-    scroll-behavior: smooth;
-}
-
-/* Scrollbar Sutil */
-.diary-page__content-area::-webkit-scrollbar {
-    width: 4px;
-}
-
-.diary-page__content-area::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.diary-page__content-area::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-}
-
-.diary-page__content-area::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 .diary-page--loading {

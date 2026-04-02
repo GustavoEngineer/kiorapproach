@@ -1,0 +1,58 @@
+.weekly-carousel-responsive {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineado a la izquierda */
+    justify-content: center;
+    width: 100%;
+    padding: clamp(0.5rem, 5vh, 2rem) 0;
+    gap: 1.5rem;
+    overflow: visible; /* Permitir que los números se vean sin cortes */
+}
+
+.weekly-carousel-responsive__header {
+    width: 100%;
+    padding: 0 0.5rem;
+}
+
+.weekly-carousel-responsive__title {
+    font-size: 0.8rem; /* Tamaño original fijo de la versión de escritorio */
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    margin: 0;
+    text-align: left;
+}
+
+.weekly-carousel-responsive__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+    gap: clamp(1rem, 6vw, 2.5rem);
+    overflow: visible;
+}
+
+.weekly-carousel-responsive__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1.2rem); /* Gap general para los días futuros */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.weekly-carousel-responsive__item--today {
+    gap: clamp(1rem, 5vw, 2.5rem); /* Separación aumentada solo para el día de hoy */
+}
+
+.weekly-carousel-responsive__day-name {
+    font-size: clamp(1.2rem, 6vmin, 2.2rem);
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+

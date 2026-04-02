@@ -1,0 +1,127 @@
+.diary-page-responsive {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.01);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.diary-page-responsive__header {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.2);
+    gap: 0.5rem;
+}
+
+.diary-page-responsive__title-container {
+    width: 100%;
+}
+
+.diary-page-responsive__title-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    width: 100%;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.diary-page-responsive__metrics {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.diary-page-responsive__metric-group {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.diary-page-responsive__metric-tag {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    white-space: nowrap;
+}
+
+.diary-page-responsive__save-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.diary-page-responsive__save-btn--saved {
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.diary-page-responsive__body {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.diary-page-responsive__gutter {
+    flex: 0 0 2rem;
+    padding: 1rem 0.4rem;
+    background-color: rgba(30, 30, 30, 0.1);
+    border-right: 1px solid rgba(100, 100, 100, 0.1);
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    text-align: right;
+    user-select: none;
+    overflow: hidden;
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+.diary-page-responsive__line-number {
+    height: 1.6em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.diary-page-responsive__content-area {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.diary-page-responsive--loading {
+    align-items: center;
+    justify-content: center;
+}
+
+.diary-page-responsive__status {
+    font-size: 0.7rem;
+    color: #ffffff;
+    letter-spacing: 0.1rem;
+    opacity: 0.6;
+}

@@ -11,7 +11,8 @@
     border: none;
     border-radius: 0;
     padding: 0.7rem 2rem;
-    display: inline-block;
+    display: block; /* Modificado de inline-block para mejor responsividad */
+    box-sizing: border-box; /* Crucial para evitar desbordamiento */
 }
 
 .basic-card__corner {

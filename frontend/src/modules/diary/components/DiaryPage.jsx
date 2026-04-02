@@ -3,6 +3,7 @@ import { countWords } from '../utils/wordCounter';
 import { getLinesArray, countLines } from '../utils/lineCounter';
 import { useDiary } from '../hooks/useDiary';
 import './DiaryPage.css';
+import '../../../common/components/TacticalScrollContainer.css';
 import { typography } from '../../../common/utils/Typography';
 
 const DiaryPage = ({ selectedDate }) => {
@@ -156,7 +157,7 @@ const DiaryPage = ({ selectedDate }) => {
                 {/* Writing Area */}
                 <textarea 
                     ref={textareaRef}
-                    className="diary-page__content-area"
+                    className="diary-page__content-area tactical-scroll"
                     placeholder="COMMENCE_LOG_ENTRY..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}

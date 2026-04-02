@@ -5,7 +5,7 @@ import DailySelectionCircle from './DailySelectionCircle';
 import DiaryPage from './DiaryPage';
 import './WeeklyCarousel.css';
 
-const WeeklyCarousel = () => {
+const WeeklyCarousel = ({ showEditor = true, hideCard = false }) => {
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const monthName = new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(selectedDate);
     const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
@@ -55,46 +55,52 @@ const WeeklyCarousel = () => {
         return dayNum === selectedDate.getDate().toString().padStart(2, '0');
     };
 
+    const Content = (
+        <div className="weekly-carousel__inner">
+            <div className="weekly-carousel__header">
+                <h2 className="weekly-carousel__title" style={{ fontFamily: typography.accent }}>
+                    Weekly Archive / {capitalizedMonth}
+                </h2>
+            </div>
+
+            <div className="weekly-carousel__content">
+                <div className="weekly-carousel__list">
+                    {days.map((day) => (
+                        <div 
+                            key={day.id} 
+                            className={`weekly-carousel__item ${day.isToday ? 'weekly-carousel__item--today' : ''} ${!day.isCurrentMonth ? 'weekly-carousel__item--other-month' : ''} ${isSelected(day.num) ? 'weekly-carousel__item--selected' : ''}`}
+                        >
+                            <div className="weekly-carousel__info">
+                                <span className="weekly-carousel__name" style={{ fontFamily: typography.accent }}>
+                                    {day.name}
+                                </span>
+                                
+                                <DailySelectionCircle 
+                                    num={day.num}
+                                    isToday={day.isToday}
+                                    isSelected={isSelected(day.num)}
+                                    isCurrentMonth={day.isCurrentMonth}
+                                    onClick={() => setSelectedDate(day.fullDate)}
+                                />
+                            </div>
+
+                            {day.isToday && <div className="weekly-carousel__marker" />}
+                        </div>
+                    ))}
+                </div>
+                
+                {showEditor && <DiaryPage selectedDate={selectedDate} />}
+            </div>
+        </div>
+    );
+
     return (
         <div className="weekly-carousel">
-            <BasicCard style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <div className="weekly-carousel__inner">
-                    <div className="weekly-carousel__header">
-                        <h2 className="weekly-carousel__title" style={{ fontFamily: typography.accent }}>
-                            Weekly Archive / {capitalizedMonth}
-                        </h2>
-                    </div>
-
-                    <div className="weekly-carousel__content">
-                        <div className="weekly-carousel__list">
-                            {days.map((day) => (
-                                <div 
-                                    key={day.id} 
-                                    className={`weekly-carousel__item ${day.isToday ? 'weekly-carousel__item--today' : ''} ${!day.isCurrentMonth ? 'weekly-carousel__item--other-month' : ''} ${isSelected(day.num) ? 'weekly-carousel__item--selected' : ''}`}
-                                >
-                                    <div className="weekly-carousel__info">
-                                        <span className="weekly-carousel__name" style={{ fontFamily: typography.accent }}>
-                                            {day.name}
-                                        </span>
-                                        
-                                        <DailySelectionCircle 
-                                            num={day.num}
-                                            isToday={day.isToday}
-                                            isSelected={isSelected(day.num)}
-                                            isCurrentMonth={day.isCurrentMonth}
-                                            onClick={() => setSelectedDate(day.fullDate)}
-                                        />
-                                    </div>
-
-                                    {day.isToday && <div className="weekly-carousel__marker" />}
-                                </div>
-                            ))}
-                        </div>
-                        
-                        <DiaryPage selectedDate={selectedDate} />
-                    </div>
-                </div>
-            </BasicCard>
+            {hideCard ? Content : (
+                <BasicCard style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    {Content}
+                </BasicCard>
+            )}
         </div>
     );
 };
