@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api/diario';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/diario';
 
 /**
  * Service to handle tactical diary synchronization with MongoDB
