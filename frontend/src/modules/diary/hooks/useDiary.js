@@ -9,13 +9,18 @@ export const useDiary = (selectedDate) => {
     const [id, setId] = useState(null);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [numSesion, setNumSesion] = useState(1);
+    const [numPagina, setNumPagina] = useState(1);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState('READY'); // READY, SAVING, SAVED, ERROR
 
-    // Format date to YYYY-MM-DD for comparison and storage
-    const dateStr = selectedDate.toISOString().split('T')[0];
+    // Helper to get consistent local date string YYYY-MM-DD
+    const getLocalDateStr = (date) => {
+        const d = new Date(date);
+        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+    };
+
+    const dateStr = getLocalDateStr(selectedDate);
 
     // Fetch entries and find the one for the selected date
     const loadEntry = useCallback(async () => {
@@ -25,21 +30,21 @@ export const useDiary = (selectedDate) => {
             const result = await diaryService.getEntries();
             const entries = result.data || [];
             
-            // Buscar el registro que coincida con la fecha (solo parte YYYY-MM-DD)
-            const entry = entries.find(e => e.fecha.startsWith(dateStr));
+            // Buscar el registro que coincida con la fecha localmente
+            const entry = entries.find(e => getLocalDateStr(e.fecha) === dateStr);
             
             if (entry) {
                 setId(entry._id);
                 setTitle(entry.titulo || '');
                 setContent(entry.contenido || '');
-                setNumSesion(entry.numSesion || 1);
+                setNumPagina(entry.numPagina || 1);
                 setStatus('LOADED');
             } else {
                 // Reset for new entry
                 setId(null);
                 setTitle('');
                 setContent('');
-                setNumSesion(entries.length + 1); // Sugerencia de sesión
+                setNumPagina(entries.length + 1); // Sugerencia de página
                 setStatus('READY');
             }
         } catch (error) {
@@ -67,7 +72,7 @@ export const useDiary = (selectedDate) => {
             titulo: title || `LOG_${dateStr}`,
             contenido: content,
             fecha: selectedDate,
-            numSesion: numSesion,
+            numPagina: numPagina,
             metadatos: {
                 lineas: metrics.lineas || 0,
                 palabras: metrics.palabras || 0
@@ -102,8 +107,8 @@ export const useDiary = (selectedDate) => {
         setTitle,
         content,
         setContent,
-        numSesion,
-        setNumSesion,
+        numPagina,
+        setNumPagina,
         loading,
         saving,
         status,

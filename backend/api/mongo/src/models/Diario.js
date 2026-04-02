@@ -9,7 +9,7 @@ const diarioSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    numSesion: {
+    numPagina: {
         type: Number,
         default: 1
     },

@@ -38,6 +38,7 @@ class DiarioService {
         if (data.contenido) diario.contenido = data.contenido;
         if (data.titulo) diario.titulo = data.titulo;
         if (data.fecha) diario.fecha = data.fecha;
+        if (data.numPagina) diario.numPagina = data.numPagina;
         
         return await diario.save();
     }

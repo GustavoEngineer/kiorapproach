@@ -8,11 +8,12 @@ import { typography } from '../../../common/utils/Typography';
 const DiaryPage = ({ selectedDate }) => {
     const textareaRef = useRef(null);
     const gutterRef = useRef(null);
+    const [visualLines, setVisualLines] = React.useState(1);
 
     const {
         title, setTitle,
         content, setContent,
-        numSesion,
+        numPagina,
         status,
         saveRecord,
         loading
@@ -20,8 +21,26 @@ const DiaryPage = ({ selectedDate }) => {
 
     // Dynamic metrics calculation
     const wordCount = countWords(content);
-    const lines = getLinesArray(content);
     const lineCount = countLines(content);
+
+    // Sync visual lines with scroll area
+    const syncVisualLines = React.useCallback(() => {
+        if (textareaRef.current) {
+            const style = window.getComputedStyle(textareaRef.current);
+            const lineHeight = parseFloat(style.lineHeight) || 22.4; // Default based on 14px * 1.6
+            const padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+            const contentHeight = textareaRef.current.scrollHeight - padding;
+            const count = Math.max(1, Math.round(contentHeight / lineHeight));
+            setVisualLines(count);
+        }
+    }, [textareaRef]);
+
+    React.useEffect(() => {
+        syncVisualLines();
+        // Also sync on window resize
+        window.addEventListener('resize', syncVisualLines);
+        return () => window.removeEventListener('resize', syncVisualLines);
+    }, [syncVisualLines, content]);
 
     // Sync scroll between textarea and gutter
     const handleScroll = () => {
@@ -68,7 +87,7 @@ const DiaryPage = ({ selectedDate }) => {
                 {/* Row 2: Tactical Metrics & Sync */}
                 <div className="diary-page__header-row">
                     <span className="diary-page__metric-tag" style={{ fontFamily: typography.accent }}>
-                        SESSION::[RECORD_{numSesion.toString().padStart(2, '0')}]
+                        PAGE::[PAGE_{numPagina.toString().padStart(3, '0')}]
                     </span>
                     <span className="diary-page__metric-tag" style={{ fontFamily: typography.accent }}>
                         WORDS::[{wordCount.toString().padStart(3, '0')}]
@@ -97,7 +116,7 @@ const DiaryPage = ({ selectedDate }) => {
             <div className="diary-page__body">
                 {/* Line Gutter */}
                 <div className="diary-page__gutter" ref={gutterRef} style={{ fontFamily: typography.mono }}>
-                    {lines.map((_, index) => (
+                    {Array.from({ length: visualLines }).map((_, index) => (
                         <div key={index} className="diary-page__line-number">
                             {(index + 1).toString().padStart(2, '0')}
                         </div>
@@ -110,7 +129,10 @@ const DiaryPage = ({ selectedDate }) => {
                     className="diary-page__content-area"
                     placeholder="COMMENCE_LOG_ENTRY..."
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={(e) => {
+                        setContent(e.target.value);
+                        syncVisualLines();
+                    }}
                     onScroll={handleScroll}
                     style={{ fontFamily: typography.mono }}
                     spellCheck="false"
