@@ -135,6 +135,26 @@
     padding: 1.5rem; /* Match total padding of gutter */
     box-sizing: border-box;
     margin: 0;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-width: thin;
+}
+
+/* Scrollbar Sutil */
+.diary-page__content-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.diary-page__content-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.diary-page__content-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.diary-page__content-area::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .diary-page--loading {
