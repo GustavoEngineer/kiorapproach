@@ -5,7 +5,7 @@ import './DiaryPageResponsive.css';
 import '../../../../common/components/TacticalScrollContainer.css';
 import { typography } from '../../../../common/utils/Typography';
 
-const DiaryPageResponsive = ({ selectedDate }) => {
+const DiaryPageResponsive = ({ selectedDate, onToggleFocus }) => {
     const textareaRef = useRef(null);
     const gutterRef = useRef(null);
     const ghostRef = useRef(null);
@@ -94,6 +94,8 @@ const DiaryPageResponsive = ({ selectedDate }) => {
                         style={{ fontFamily: typography.primary }}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        onFocus={() => onToggleFocus && onToggleFocus(true)}
+                        onBlur={() => onToggleFocus && onToggleFocus(false)}
                     />
                 </div>
 
@@ -138,6 +140,8 @@ const DiaryPageResponsive = ({ selectedDate }) => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     onScroll={handleScroll}
+                    onFocus={() => onToggleFocus && onToggleFocus(true)}
+                    onBlur={() => onToggleFocus && onToggleFocus(false)}
                     style={{ fontFamily: typography.mono }}
                     spellCheck="false"
                 />
