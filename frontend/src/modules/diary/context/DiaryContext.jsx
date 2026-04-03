@@ -14,6 +14,7 @@ export const DiaryProvider = ({ children }) => {
     
     // Drafts cache: { "YYYY-MM-DD": { title, content, id } }
     const [drafts, setDrafts] = useState({});
+    const draftsRef = React.useRef({});
 
     // Helper to get consistent local date string YYYY-MM-DD
     const getLocalDateStr = (date) => {
@@ -25,8 +26,8 @@ export const DiaryProvider = ({ children }) => {
         const dateStr = getLocalDateStr(selectedDate);
         
         // 1. Check if we have an unsaved draft for this date already in memory
-        if (drafts[dateStr]) {
-            const draft = drafts[dateStr];
+        if (draftsRef.current[dateStr]) {
+            const draft = draftsRef.current[dateStr];
             setId(draft.id);
             setTitle(draft.title);
             setContent(draft.content);
@@ -35,7 +36,11 @@ export const DiaryProvider = ({ children }) => {
             return;
         }
 
-        setLoading(true);
+        // Solo activar el estado de carga si NO tenemos datos previos Y no estamos guardando
+        if (!content && !title && status !== 'SAVING' && status !== 'SAVED') {
+            setLoading(true);
+        }
+        
         setStatus('LOADING');
         try {
             const response = await diaryService.getEntries();
@@ -70,25 +75,34 @@ export const DiaryProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [drafts]);
+    }, [content, title, status]);
 
     const updateDraft = useCallback((date, field, value) => {
         const dateStr = getLocalDateStr(date);
+        
+        // Si el estado actual es GUARDADO o ERROR, lo reseteamos inmediatamente al empezar a escribir
+        if (status === 'SAVED' || status === 'ERROR') {
+            setStatus('READY');
+        }
+
         // Map field to local state first
         if (field === 'title') setTitle(value);
         if (field === 'content') setContent(value);
 
-        // Update drafts cache to preserve unsaved changes
+        // Update ref for stable loadEntry check
+        draftsRef.current[dateStr] = {
+            ...draftsRef.current[dateStr],
+            [field]: value,
+            id: (field === 'id') ? value : (draftsRef.current[dateStr]?.id || id),
+            numPagina: (field === 'numPagina') ? value : (draftsRef.current[dateStr]?.numPagina || numPagina)
+        };
+
+        // Update state to trigger re-renders
         setDrafts(prev => ({
             ...prev,
-            [dateStr]: {
-                ...prev[dateStr],
-                [field]: value,
-                id: (field === 'id') ? value : (prev[dateStr]?.id || id),
-                numPagina: (field === 'numPagina') ? value : (prev[dateStr]?.numPagina || numPagina)
-            }
+            [dateStr]: draftsRef.current[dateStr]
         }));
-    }, [id, numPagina]);
+    }, [id, numPagina, status]);
 
     const saveRecord = async (selectedDate, metrics = {}) => {
         if (saving) return;
@@ -97,7 +111,7 @@ export const DiaryProvider = ({ children }) => {
         
         const dateStr = getLocalDateStr(selectedDate);
         const data = {
-            titulo: title || `LOG_${dateStr}`,
+            titulo: title, // Ya no usamos fallback 'LOG_...', enviamos exactamente lo puesto
             contenido: content,
             fecha: selectedDate,
             numPagina: numPagina,
@@ -118,13 +132,14 @@ export const DiaryProvider = ({ children }) => {
 
             if (result.success) {
                 setStatus('SAVED');
-                // Clear draft for this date as it is now saved
+                // Al guardar, limpiamos el borrador (ref y state)
+                delete draftsRef.current[dateStr];
                 setDrafts(prev => {
                     const newDrafts = { ...prev };
                     delete newDrafts[dateStr];
                     return newDrafts;
                 });
-                setTimeout(() => setStatus('READY'), 3000);
+                setTimeout(() => setStatus('READY'), 6000); // 6 segundos
             }
         } catch (error) {
             console.error('DIARY_SAVE_ERROR:', error);

@@ -21,12 +21,12 @@ export const useDiary = (selectedDate) => {
         saveRecord, updateDraft
     } = context;
 
-    // Trigger load when date changes - logic remains internal to the hook for component convenience
+    // Trigger load only when date physically changes
     useEffect(() => {
         if (selectedDate) {
             loadEntry(selectedDate);
         }
-    }, [selectedDate, loadEntry]);
+    }, [selectedDate]); // Se elimina loadEntry de dependencias para evitar ciclos innecesarios
 
     // Adaptive setters that update both local context and the draft cache
     const wrappedSetTitle = (val) => updateDraft(selectedDate, 'title', val);

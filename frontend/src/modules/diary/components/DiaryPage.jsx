@@ -17,7 +17,7 @@ const DiaryPage = ({ selectedDate }) => {
         title, setTitle,
         content, setContent,
         numPagina,
-        status,
+        status, setStatus,
         saveRecord,
         loading
     } = useDiary(selectedDate);
@@ -87,7 +87,8 @@ const DiaryPage = ({ selectedDate }) => {
         });
     };
 
-    if (loading) {
+    {/* El overlay de carga solo aparece si NO hay datos (carga inicial profunda) */}
+    if (loading && !content && !title) {
         return (
             <div className="diary-page diary-page--loading">
                 <div className="diary-page__status" style={{ fontFamily: typography.accent }}>
@@ -133,10 +134,11 @@ const DiaryPage = ({ selectedDate }) => {
                             className={`diary-page__save-btn diary-page__save-btn--${status.toLowerCase()}`}
                             onClick={handleSave}
                             style={{ fontFamily: typography.accent }}
+                            disabled={status === 'SAVING'}
                         >
-                            {status === 'SAVING' ? 'UPLOADING...' : 
-                             status === 'SAVED' ? 'SYNC_COMPLETE' : 
-                             status === 'ERROR' ? 'LINK_FAILURE' : 'SAVE_DATA'}
+                            {status === 'SAVING' ? 'GUARDANDO...' : 
+                             status === 'SAVED' ? 'GUARDADO' : 
+                             status === 'ERROR' ? 'FALLO_LINK' : 'SAVE_DATA'}
                         </button>
                     </div>
                 </div>

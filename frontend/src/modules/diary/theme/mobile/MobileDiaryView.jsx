@@ -13,8 +13,16 @@ const MobileDiaryView = () => {
     const initialHeight = React.useRef(window.innerHeight);
     const hasShrunk = React.useRef(false);
 
-    // Detección robusta de cierre de teclado basada en altura
+    // Detección de dispositivo móvil real (Touch + Mobile UA)
+    const isMobileDevice = React.useMemo(() => {
+        return (window.matchMedia("(pointer: coarse)").matches) || 
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }, []);
+
+    // Detección robusta de cierre de teclado basada en altura (SOLO MÓVIL)
     React.useEffect(() => {
+        if (!isMobileDevice) return;
+
         const handleResize = () => {
             const currentHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
             
@@ -47,10 +55,13 @@ const MobileDiaryView = () => {
                 window.removeEventListener('resize', handleResize);
             }
         };
-    }, []);
+    }, [isMobileDevice]);
 
     // Resetear el flag de encogimiento si el foco se quita de forma manual
     const handleToggleFocus = (val) => {
+        // Solo aplicar modo foco en dispositivos móviles reales
+        if (!isMobileDevice) return;
+        
         setIsFocused(val);
         if (!val) hasShrunk.current = false;
     };

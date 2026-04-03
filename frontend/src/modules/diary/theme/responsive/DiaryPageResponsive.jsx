@@ -16,7 +16,7 @@ const DiaryPageResponsive = ({ selectedDate, onToggleFocus }) => {
         title, setTitle,
         content, setContent,
         numPagina,
-        status,
+        status, setStatus,
         saveRecord,
         loading
     } = useDiary(selectedDate || new Date());
@@ -73,15 +73,14 @@ const DiaryPageResponsive = ({ selectedDate, onToggleFocus }) => {
         });
     };
 
-    if (loading) {
-        return (
-            <div className="diary-page-responsive diary-page-responsive--loading">
-                <div className="diary-page-responsive__status" style={{ fontFamily: typography.accent }}>
-                    INIT_LINK...
+            {/* Pantalla de carga sutil: Solo bloquea si es carga inicial profunda */}
+            {loading && !content && (
+                <div className="diary-page-responsive diary-page-responsive--loading">
+                    <div className="diary-page-responsive__status" style={{ fontFamily: typography.accent }}>
+                        ESTABLISHING_LINK...
+                    </div>
                 </div>
-            </div>
-        );
-    }
+            )}
 
     return (
         <div className="diary-page-responsive">
@@ -98,35 +97,40 @@ const DiaryPageResponsive = ({ selectedDate, onToggleFocus }) => {
                         onBlur={() => onToggleFocus && onToggleFocus(false)}
                     />
                 </div>
+            </div>
 
-                <div className="diary-page-responsive__metrics">
-                    <div className="diary-page-responsive__metric-group">
-                        <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
-                            P::{numPagina.toString().padStart(2, '0')}
-                        </span>
-                        <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
-                            W::{wordCount.toString().padStart(3, '0')}
-                        </span>
-                        <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
-                            L::{linesWithTextCount.toString().padStart(3, '0')}
-                        </span>
-                    </div>
-                    
+            <div className="diary-page-responsive__separator" />
+
+            <div className="diary-page-responsive__metrics">
+                <div className="diary-page-responsive__metric-group">
+                    <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
+                        [PG_{numPagina.toString().padStart(3, '0')}]
+                    </span>
+                    <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
+                        [W:{wordCount.toString().padStart(3, '0')}]
+                    </span>
+                    <span className="diary-page-responsive__metric-tag" style={{ fontFamily: typography.accent }}>
+                        [L:{linesWithTextCount.toString().padStart(3, '0')}]
+                    </span>
+                </div>
+                
+                <div className="diary-page-responsive__actions">
                     <button 
                         className={`diary-page-responsive__save-btn diary-page-responsive__save-btn--${status.toLowerCase()}`}
                         onClick={handleSave}
                         style={{ fontFamily: typography.accent }}
+                        disabled={status === 'SAVING'}
                     >
-                        {status === 'SAVING' ? 'SYNC...' : 
-                         status === 'SAVED' ? 'OK' : 
-                         status === 'ERROR' ? 'FAIL' : 'SAVE'}
+                        {status === 'SAVING' ? 'GUARDANDO...' : 
+                         status === 'SAVED' ? 'GUARDADO' : 
+                         status === 'ERROR' ? 'FALLO_LINK' : 'SAVE_DATA'}
                     </button>
                 </div>
             </div>
             
             <div className="diary-page-responsive__body">
                 <div className="diary-page-responsive__gutter" ref={gutterRef} style={{ fontFamily: typography.mono }}>
-                    {Array.from({ length: visualLines }).map((_, index) => (
+                    {Array.from({ length: Math.max(20, visualLines) }).map((_, index) => (
                         <div key={index} className="diary-page-responsive__line-number">
                             {(index + 1).toString().padStart(2, '0')}
                         </div>
